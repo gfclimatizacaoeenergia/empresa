@@ -1,0 +1,8 @@
+GF Climatização e Energia — pacote final revisado
+
+1. Mantenha no GitHub as imagens já existentes: gf-logo-transparente.png, ac-room.jpg, ac-install.jpg, ac-outdoor.jpg, ac-clean.jpg, solar-home.jpg, solar-install.jpg e solar-roof.jpg.
+2. Envie todos os arquivos deste pacote para a raiz do repositório, junto das imagens.
+3. O index.html é a Home.
+4. As páginas pilares são ar-condicionado-valinhos.html e energia-solar-valinhos.html.
+5. Todas as páginas possuem links internos para as páginas pilares, páginas específicas e Home.
+6. sitemap.xml e robots.txt já estão incluídos para SEO.
