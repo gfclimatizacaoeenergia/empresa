@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GF | Calculadora de Orçamento</title>
+<link rel="icon" type="image/png" href="gf-logo-transparente.png">
+<style>
+:root{--navy:#063d61;--navy2:#022d49;--blue:#13a9e8;--green:#12bf50;--bg:#f3f7fa;--text:#102c40;--muted:#617485;--line:#dbe5ec}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,var(--navy2),var(--navy));color:white;padding:28px 18px}header>div{max-width:1050px;margin:auto}
+h1{margin:6px 0;font-size:30px}.sub{color:#d8ebf5}.badge{color:#72d5ff;font-size:12px;font-weight:bold;letter-spacing:.12em}.logo{display:block;width:155px;height:auto;object-fit:contain;margin:0 0 14px}
+.wrap{max-width:1050px;margin:22px auto;padding:0 16px;display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.card,details{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 7px 25px #05325012}
+h2{margin:0 0 18px;font-size:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #cddae3;border-radius:10px;padding:0 12px;font-size:16px;background:white}
+input,select{height:48px}textarea{min-height:270px;padding:14px;line-height:1.5;resize:vertical}.hint{font-size:12px;color:var(--muted);margin-top:5px}.hidden{display:none}
+.totalbox{background:var(--navy);color:white;border-radius:16px;padding:20px}.total{font-size:38px;font-weight:900;margin:4px 0}.totalbox small{color:#c8e1ef}
+.row{display:flex;justify-content:space-between;gap:15px;padding:8px 0;font-size:14px}.break{border-top:1px solid #e4ebf0;margin-top:15px;padding-top:8px}
+.internal{margin:16px 0;background:#f5f8fa;border-radius:12px;padding:14px}.profit{color:#087f39;font-size:20px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}button,.btn{border:0;border-radius:11px;min-height:49px;font-weight:bold;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.copy{background:var(--navy);color:white}.wa{background:var(--green);color:white}.config{max-width:1050px;margin:0 auto 35px;padding:0 16px}.config details{box-shadow:none}.config summary{font-weight:bold;cursor:pointer}
+.cfggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}.cfggrid h3{grid-column:1/-1;font-size:14px;margin:12px 0 0}.cfggrid input{height:42px}
+@media(max-width:760px){.logo{width:135px;margin-bottom:12px}.wrap{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.full{grid-column:auto}.actions{grid-template-columns:1fr}.cfggrid{grid-template-columns:1fr 1fr}.card{padding:17px}h1{font-size:25px}}
+</style></head><body>
+<header><div><img src="logobranca.png" alt="GF Climatização e Energia" class="logo"><div class="badge">GF CLIMATIZAÇÃO E ENERGIA</div><h1>Calculadora de orçamento</h1><div class="sub">Uso interno • instalação de ar-condicionado</div></div></header>
+<main class="wrap">
+<section class="card"><h2>Dados do orçamento</h2><div class="grid">
+<div><label>Nome do cliente</label><input id="nome" placeholder="Ex.: João"></div>
+<div><label>WhatsApp</label><input id="whatsapp" placeholder="(19) 99999-9999"></div>
+<div><label>Capacidade</label><select id="btu"><option value="9000">9.000 BTUs</option><option value="12000">12.000 BTUs</option><option value="18000">18.000 BTUs</option><option value="24000">24.000 BTUs</option></select></div>
+<div><label>Quantidade</label><input id="qtd" type="number" min="1" value="1"></div>
+<div><label>Cidade</label><input id="cidade" placeholder="Valinhos"></div><div><label>Bairro</label><input id="bairro"></div>
+<div><label>Precisa adicionar ponto 220V?</label><select id="v220"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
+<div><label>É parede com parede?</label><select id="parede"><option value="sim">Sim</option><option value="nao">Não</option></select></div>
+<div id="metrosBox" class="hidden"><label>Metros adicionais</label><input id="metros" type="number" min="0" step=".5" value="0"><div class="hint">R$ 30 por metro.</div></div>
+<div><label>Andar</label><select id="andar"><option value="0">Térreo</option><option value="1">2º andar</option><option value="2">3º andar</option><option value="3">4º andar</option><option value="4">5º andar ou superior</option></select></div>
+<div><label>Distância em km</label><input id="km" type="number" min="0" value="0"><div class="hint">Cada bloco iniciado de 10 km: + R$ 30.</div></div>
+<div><label>Desconto (R$)</label><input id="desconto" type="number" min="0" step="1" value="0"><div class="hint">Opcional. Descontado do valor final.</div></div>
+<div class="full"><label>Observação</label><input id="obs" placeholder="Opcional"></div>
+</div></section>
+<aside class="card"><h2>Resultado</h2><div class="totalbox"><small>VALOR DO ORÇAMENTO</small><div class="total" id="total"></div><small id="resumo"></small></div>
+<div class="break" id="breakdown"></div>
+<div class="internal"><div class="row"><span>Custo estimado interno</span><strong id="custo"></strong></div><div class="row"><span>Margem estimada</span><strong class="profit" id="lucro"></strong></div><div class="hint">Não aparece na mensagem do cliente.</div></div>
+<h2>Mensagem pronta</h2><textarea id="mensagem"></textarea><div class="actions"><button class="copy" id="copiar">Copiar texto</button><a class="btn wa" id="enviar" target="_blank">Abrir no WhatsApp</a></div></aside>
+</main>
+<section class="config"><details><summary>⚙️ Configurar valores</summary><div class="cfggrid">
+<h3>Preço base sem 220V</h3>
+<div><label>9.000</label><input id="p9000" value="699"></div><div><label>12.000</label><input id="p12000" value="699"></div><div><label>18.000</label><input id="p18000" value="799"></div><div><label>24.000</label><input id="p24000" value="899"></div>
+<h3>Preço com 220V</h3>
+<div><label>9.000</label><input id="v9000" value="850"></div><div><label>12.000</label><input id="v12000" value="850"></div><div><label>18.000</label><input id="v18000" value="950"></div><div><label>24.000</label><input id="v24000" value="1050"></div>
+<h3>Custo estimado (material + mão de obra)</h3>
+<div><label>9.000</label><input id="c9000" value="400"></div><div><label>12.000</label><input id="c12000" value="400"></div><div><label>18.000</label><input id="c18000" value="500"></div><div><label>24.000</label><input id="c24000" value="600"></div>
+<h3>Adicionais</h3><div><label>Por metro</label><input id="porMetro" value="30"></div><div><label>Por andar</label><input id="porAndar" value="50"></div><div><label>A cada 10 km</label><input id="por10km" value="30"></div>
+</div><p class="hint">24.000 BTUs e custos de 18.000/24.000 são fictícios para teste.</p></details></section>
+<script>
+const $=x=>document.getElementById(x), n=x=>Number($(x).value)||0, money=x=>Number(x).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function calc(){
+ let b=$('btu').value,q=Math.max(1,n('qtd')),has220=$('v220').value==='sim', parede=$('parede').value==='sim';
+ $('metrosBox').classList.toggle('hidden',parede);
+ let base=(has220?n('v'+b):n('p'+b))*q, metros=parede?0:n('metros'), exM=metros*n('porMetro')*q, exA=n('andar')*n('porAndar')*q;
+ let exK=n('km')>0?Math.ceil(n('km')/10)*n('por10km'):0,subtotal=base+exM+exA+exK,desconto=Math.min(n('desconto'),subtotal),total=subtotal-desconto,custo=n('c'+b)*q,lucro=total-custo;
+ $('total').textContent=money(total);$('custo').textContent=money(custo);$('lucro').textContent=money(lucro);$('resumo').textContent=q+' '+(q===1?'aparelho':'aparelhos')+' • '+Number(b).toLocaleString('pt-BR')+' BTUs';
+ let r=[['Instalação base',money(base)]];if(has220)r.push(['Ponto 220V','incluído']);if(exM)r.push([metros+' m adicionais',money(exM)]);if(exA)r.push(['Adicional de andar',money(exA)]);if(exK)r.push(['Deslocamento ('+n('km')+' km)',money(exK)]);if(desconto)r.push(['Desconto','- '+money(desconto)]);
+ $('breakdown').innerHTML=r.map(x=>'<div class="row"><span>'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');
+ let nome=$('nome').value.trim()||'cliente',local=[$('bairro').value.trim(),$('cidade').value.trim()].filter(Boolean).join(' - '),obs=$('obs').value.trim();
+ let m='Olá, '+nome+'! 😊\n\nSegue seu orçamento para instalação de '+q+' '+(q===1?'ar-condicionado':'aparelhos de ar-condicionado')+' de '+Number(b).toLocaleString('pt-BR')+' BTUs.\n\n';
+ if(local)m+='📍 Local: '+local+'\n';m+='❄️ Instalação: '+money(total)+'\n⚡ Ponto 220V: '+(has220?'incluído':'não incluído')+'\n';
+ if(metros)m+='📏 Tubulação adicional: '+metros+' m\n';if(n('andar'))m+='🏢 Andar: '+$('andar').options[$('andar').selectedIndex].text+'\n';if(n('km'))m+='🚗 Deslocamento: '+n('km')+' km\n';if(obs)m+='📝 Observação: '+obs+'\n';
+ m+='\n*Valor total: '+money(total)+'*\n\nOrçamento sujeito à confirmação das condições do local.\n\nGF Climatização e Energia';
+ $('mensagem').value=m;let ph=$('whatsapp').value.replace(/\D/g,'');if(ph&&!ph.startsWith('55'))ph='55'+ph;$('enviar').href='https://wa.me/'+ph+'?text='+encodeURIComponent(m);
+}
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',calc));
+$('copiar').onclick=async()=>{await navigator.clipboard.writeText($('mensagem').value);$('copiar').textContent='Copiado ✓';setTimeout(()=>$('copiar').textContent='Copiar texto',1200)};calc();
+</script></body></html>
